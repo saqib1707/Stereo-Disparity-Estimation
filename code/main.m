@@ -1,0 +1,10 @@
+clc; clear;
+left_img = imread('../Stereo-Matching/teddy_left.png');
+right_img = imread('../Stereo-Matching/teddy_right.png');
+left_img = rgb2gray(left_img);
+right_img = rgb2gray(right_img);
+window_size = 3;
+max_search_space = 50;
+disparity = compute_disparity(left_img, right_img, window_size, max_search_space);
+imshow(left_img);
+imshow(disparity);
