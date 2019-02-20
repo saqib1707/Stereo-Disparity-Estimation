@@ -76,16 +76,18 @@ function [final_disparity] = compute_disparity_edge(left_img, right_img, left_ed
     for row=1:floor(height/patch_size)
         for col = 1:floor(width/patch_size)
             disp_patch = disparity_map(patch_size*(row-1)+1:patch_size*row,patch_size*(col-1)+1:patch_size*col);
-            number_zero_loc = sum(sum(disp_patch == 0));
-            N = number_zero_loc;
+            zero_loc = (disp_patch == 0);
+            N = sum(sum(zero_loc));
             lower_bound(1:N,1) = 0;
             upper_bound(1:N,1) = 1.0;
             starting_point = rand(N,1);
             [patch_height, patch_width] = size(disp_patch);
-            obj_func = @(x)objective_function(x, patch_height, patch_width, disp_patch);
+            obj_func = @(x)objective_function(x,disp_patch);
             linearcons = @(x)constraints(x);
             [opt_x, fval, exitflag, output] = fmincon(obj_func, starting_point, A, b, Aeq, beq, lower_bound, upper_bound, linearcons, options);
-            final_disparity(patch_size*(row-1)+1:patch_size*row,patch_size*(col-1)+1:patch_size*col) = reshape(opt_x,patch_size,patch_size);
+            temp = disp_patch;
+            temp(zero_loc) = opt_x;
+            final_disparity(patch_size*(row-1)+1:patch_size*row,patch_size*(col-1)+1:patch_size*col) = temp;
         end
         waitbar(row/(floor(height/patch_size)), progress_bar);
     end
