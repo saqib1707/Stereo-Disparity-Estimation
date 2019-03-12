@@ -14,10 +14,11 @@ right_disp_gt = imread(strcat(root_folder,right_disp_file));
 scale = 0.1;
 [left_img,right_img,~,~] = myresize(left_img,right_img,left_disp_gt,right_disp_gt,scale);
 
-frameLeftGray  = rgb2gray(left_img);
-frameRightGray = rgb2gray(right_img);
+left_gray  = rgb2gray(left_img);
+right_gray = rgb2gray(right_img);
 
-disparityMap = im2double(disparity(frameLeftGray, frameRightGray));
-disparityMap = disparityMap/max(max(disparityMap));
-figure;imshow(right_img);title('right image');
-figure;imshow(disparityMap);title('Disparity Map');
+disparity_map = im2double(disparity(left_gray, right_gray));
+disparity_map = disparity_map/max(max(disparity_map));
+figure;
+subplot(1,2,1);imshow(right_img);title('right image');
+subplot(1,2,2);imshow(disparity_map);title('disparity map (in-built)');

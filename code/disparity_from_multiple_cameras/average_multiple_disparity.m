@@ -4,6 +4,7 @@ root_folder = '../../dataset/barn1/';
 left_img_file = 'im0.ppm';
 left_disp_file = 'disp2.pgm';
 right_disp_file = 'disp6.pgm';
+
 for i=1:8
     right_img_file = strcat(strcat('im',int2str(i)),'.ppm');
     window_size = 11;
