@@ -10,11 +10,11 @@ function [disparity_map] = compute_disparity_full(left_img, right_img, window_si
     disparity = zeros(height,width);
     
     for row = 1:height
-        for col = 1:width
-            metric_list = zeros(min(col+max_search_space-1, width)-col+1,1);
+        for col = 1:width-1
+            metric_list = zeros(min(col+max_search_space,width)-col,1);
             count = 1;
             right_descriptor = reshape(right_padded_img(row:row+window_size-1,col:col+window_size-1,:),feature_size,1);
-            for itr = col:min(col+max_search_space-1, width)
+            for itr = col+1:min(col+max_search_space, width)
                 left_descriptor = reshape(left_padded_img(row:row+window_size-1,itr:itr+window_size-1,:),feature_size,1);
                 similarity_metric = compute_metric(left_descriptor, right_descriptor, which_metric);
                 metric_list(count,1) = similarity_metric;
@@ -25,7 +25,7 @@ function [disparity_map] = compute_disparity_full(left_img, right_img, window_si
             elseif which_metric == 2
                 [~,loc] = max(metric_list);
             end
-            XL = col + loc - 1;
+            XL = col + loc;
             XR = col;
             disparity(row,col) = XL - XR;
         end
@@ -34,5 +34,5 @@ function [disparity_map] = compute_disparity_full(left_img, right_img, window_si
     close(progress_bar);
     disparity_map = disparity/max(max(disparity));
     
-    % disparity_map = imgaussfilt(disparity_map, sigma);   % smooth the disparity map using gaussian blur
+    disparity_map = imgaussfilt(disparity_map, sigma);   % smooth the disparity map using gaussian blur
 end
