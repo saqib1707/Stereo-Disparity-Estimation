@@ -1,2 +1,6 @@
 .DS_Store
 m~
+SIFT_feature/
+Stereo-Matching/
+*.fig
+results/q3/
