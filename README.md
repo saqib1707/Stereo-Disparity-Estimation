@@ -1,1 +1,3 @@
-For more information, one can have a look at the github repository : https://github.com/saqib1707/Stereo-Disparity-Estimation
+### Stereo-based Disparity Estimation
+Overview of the repository hierarchy
+code/disparity_constrained_optimization

@@ -1,4 +1,4 @@
-function [disparity_map] = compute_disparity_edge(left_img, right_img, window_size, max_search_space, which_metric, canny_threshold, sigma)
+function [disparity_map] = compute_disparity_using_edge(left_img, right_img, window_size, max_search_space, which_metric, canny_threshold, sigma)
     progress_bar = waitbar(0,'Performing Stereo Correspondency Matching...');
     [height,width,~] = size(left_img);     % size([left image]) = size([right image])
     left_padded_img = zeros(height+window_size-1,width+window_size-1,3);
@@ -9,7 +9,6 @@ function [disparity_map] = compute_disparity_edge(left_img, right_img, window_si
     feature_size = 3*window_size^2;      % features taken across the 3-channels
     disparity = zeros(height,width);
 
-%     left_edge_img = edge(rgb2gray(left_img),'canny',canny_threshold);
     right_edge_img = edge(rgb2gray(right_img),'canny',canny_threshold);
     for row = 1:height
         for col = 1:width
