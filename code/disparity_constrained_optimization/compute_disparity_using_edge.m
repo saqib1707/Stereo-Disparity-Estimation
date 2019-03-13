@@ -36,9 +36,9 @@ function [disparity_map] = compute_disparity_using_edge(left_img, right_img, win
     end
     close(progress_bar);
     disparity = disparity/max(max(disparity));
-    disparity_map = disparity;
+    % disparity_map = disparity;
 
-%     disparity_map = zeros(size(disparity));
+    disparity_map = zeros(size(disparity));
 %     disparity_map = imgaussfilt(disparity, sigma);  %     smooth the disparity map using gaussian blur
     
 %     [y_nz, x_nz] = find(disparity_map ~= 0);
@@ -51,31 +51,31 @@ function [disparity_map] = compute_disparity_using_edge(left_img, right_img, win
 %     disparity_map(disparity_map == 0) = estimated_points;
 
     % optimization problem for smooth interpolation of disparity map
-%     progress_bar = waitbar(0,'Performing optimization ...');
-%     Aineq = [];
-%     bineq = [];
-%     Aeq = [];
-%     beq = [];
-%     patch_size = 20;
-%     N = patch_size^2;
-%     lower_bound(1:N,1) = 0;
-%     upper_bound(1:N,1) = 1.0;
-% 
-%     options = optimoptions('fmincon', 'Algorithm', 'sqp','MaxFunEvals', 200000, 'MaxIter', 1000, ...
-%     'Display', 'iter', 'GradObj', 'off', 'DerivativeCheck','off', 'FinDiffType', 'central');
-% 
-%     count = 0;
-%     for row = 1:floor(height/patch_size)
-%         for col = 1:floor(width/patch_size)
-%             starting_point = reshape(im2double(rgb2gray(right_img(patch_size*(row-1)+1:patch_size*row,patch_size*(col-1)+1:patch_size*col,:))),N,1);
-%             disparity_patch = disparity(patch_size*(row-1)+1:patch_size*row,patch_size*(col-1)+1:patch_size*col);
-%             obj_func = @(x)objective_function(x, disparity_patch);
-%             linearcons = @(x)constraints(x, disparity_patch);
-%             [opt_x, fval, exitflag, output] = fmincon(obj_func, starting_point, Aineq, bineq, Aeq, beq, lower_bound, upper_bound, linearcons, options);
-%             disparity_map(patch_size*(row-1)+1:patch_size*row,patch_size*(col-1)+1:patch_size*col) = reshape(opt_x,patch_size,patch_size);
-%             count = count + 1;
-%             waitbar(count/(floor(height/patch_size)*floor(width/patch_size)), progress_bar);
-%         end
-%     end
-%     close(progress_bar);
+    progress_bar = waitbar(0,'Performing optimization ...');
+    Aineq = [];
+    bineq = [];
+    Aeq = [];
+    beq = [];
+    patch_size = 20;
+    N = patch_size^2;
+    lower_bound(1:N,1) = 0;
+    upper_bound(1:N,1) = 1.0;
+
+    options = optimoptions('fmincon', 'Algorithm', 'sqp','MaxFunEvals', 200000, 'MaxIter', 1000, ...
+    'Display', 'iter', 'GradObj', 'off', 'DerivativeCheck','off', 'FinDiffType', 'central');
+
+    count = 0;
+    for row = 1:floor(height/patch_size)
+        for col = 1:floor(width/patch_size)
+            starting_point = reshape(im2double(rgb2gray(right_img(patch_size*(row-1)+1:patch_size*row,patch_size*(col-1)+1:patch_size*col,:))),N,1);
+            disparity_patch = disparity(patch_size*(row-1)+1:patch_size*row,patch_size*(col-1)+1:patch_size*col);
+            obj_func = @(x)objective_function(x, disparity_patch);
+            linearcons = @(x)constraints(x, disparity_patch);
+            [opt_x, fval, exitflag, output] = fmincon(obj_func, starting_point, Aineq, bineq, Aeq, beq, lower_bound, upper_bound, linearcons, options);
+            disparity_map(patch_size*(row-1)+1:patch_size*row,patch_size*(col-1)+1:patch_size*col) = reshape(opt_x,patch_size,patch_size);
+            count = count + 1;
+            waitbar(count/(floor(height/patch_size)*floor(width/patch_size)), progress_bar);
+        end
+    end
+    close(progress_bar);
 end
