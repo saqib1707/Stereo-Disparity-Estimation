@@ -1,13 +1,13 @@
 clc; clear;
 addpath(genpath('../'));
-root_folder = '../../dataset/sawtooth/';
-left_img_file = 'im2.ppm';
-right_img_file = 'im6.ppm';
+root_folder = '../../dataset/mypics/';
+left_img_file = 'im8.jpg';
+right_img_file = 'im9.jpg';
 left_disp_file = 'disp2.pgm';
 right_disp_file = 'disp6.pgm';
 
 % hyper-parameters
-window_size = 11;
+window_size = 15;
 assert(mod(window_size,2) == 1);
 max_search_space = 50;
 which_metric = 1;        % '1' -> euclidean distance based , '2' -> correlation based
@@ -23,17 +23,16 @@ right_disp_gt = imread(strcat(root_folder,right_disp_file));
 
 % [left_img, right_img, left_disp_gt, right_disp_gt] = myresize(left_img,right_img,left_disp_gt,right_disp_gt,scale);
 
-% disparity_map = compute_disparity_full(left_img, right_img, window_size, max_search_space, which_metric, sigma);
-disparity_map = compute_disparity_using_edge(left_img, right_img, window_size, max_search_space, which_metric, canny_threshold, sigma);
-left_edge_img = edge(rgb2gray(left_img),'canny',canny_threshold);
+disparity_map = compute_disparity_full(left_img, right_img, window_size, max_search_space, which_metric, sigma);
+% disparity_map = compute_disparity_using_edge(left_img, right_img, window_size, max_search_space, which_metric, canny_threshold, sigma);
 
 fig1 = figure;
 subplot(2,2,1);imshow(left_img);title('left image');
 subplot(2,2,2);imshow(left_edge_img);title('left edge image');
 subplot(2,2,3);imshow(right_img);title('right image');
 subplot(2,2,4);imshow(disparity_map);title('disparity computed');
-print(fig1,'-dpng','-r0','../../results/disparity-results-edge/sawtooth/im26_ws_11_mss_50_1.png');
+print(fig1,'-dpng','-r0','../../results/disparity-results/mypics/im89_ws_15_mss_50_1.png');
 fig2 = figure;
-subplot(1,2,1);imshow(right_disp_gt);title('disparity ground truth');
-subplot(1,2,2);imshow(disparity_map);title('disparity computed');
-print(fig2,'-dpng','-r0','../../results/disparity-results-edge/sawtooth/im26_ws_11_mss_50_2.png')
+% subplot(1,2,1);imshow(right_disp_gt);title('disparity ground truth');
+subplot(1,1,1);imshow(disparity_map);title('disparity computed');
+print(fig2,'-dpng','-r0','../../results/disparity-results/mypics/im89_ws_15_mss_50_2.png')
